@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodTech Chat</title>
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --bg-dark: #121212;
+      --text-light: #000;
+      --text-dark: #fff;
+      --bot-bubble-light: #f1f1f1;
+      --bot-bubble-dark: #2a2a2a;
+      --user-bubble: #007bff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.light {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .chat-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 15px;
+      background: #0ff;
+      color: #000;
+      font-weight: bold;
+      text-align: center;
+      z-index: 1000;
+    }
+
+    .toggle-theme {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      cursor: pointer;
+      font-size: 14px;
+      background: #000;
+      color: #0ff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+    .chat-box {
+      margin-top: 60px;
+      margin-bottom: 70px;
+      padding: 20px;
+      overflow-y: auto;
+      height: calc(100vh - 130px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 10px 15px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+    }
+
+    .sent {
+      align-self: flex-end;
+      background: var(--user-bubble);
+      color: #fff;
+    }
+
+    .received {
+      align-self: flex-start;
+    }
+
+    body.light .received {
+      background: var(--bot-bubble-light);
+      color: #000;
+    }
+
+    body.dark .received {
+      background: var(--bot-bubble-dark);
+      color: #ccc;
+    }
+
+    .chat-input {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      background: inherit;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #999;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .chat-input button {
+      margin-left: 10px;
+      background: #0ff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .typing {
+      font-style: italic;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body class="light">
+  <div class="chat-header">
+    CodTech Chat
+    <button class="toggle-theme" onclick="toggleTheme()">🌗 Theme</button>
+  </div>
+
+  <div class="chat-box" id="chat-box"></div>
+
+  <div class="chat-input">
+    <input type="text" id="message-input" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const input = document.getElementById("message-input");
+    let currentTheme = "light";
+
+    function toggleTheme() {
+      currentTheme = currentTheme === "light" ? "dark" : "light";
+      document.body.className = currentTheme;
+    }
+
+    function sendMessage() {
+      const msg = input.value.trim();
+      if (msg) {
+        addMessage("👤 You", msg, "sent");
+        input.value = "";
+        showTyping();
+        setTimeout(() => {
+          simulateChatGPTReply(msg);
+        }, 800);
+      }
+    }
+
+    function addMessage(sender, message, type) {
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add("message", type);
+      msgDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showTyping() {
+      const typingDiv = document.createElement("div");
+      typingDiv.classList.add("message", "received", "typing");
+      typingDiv.id = "typing";
+      typingDiv.innerHTML = `🤖 CodTech Bot is typing...`;
+      chatBox.appendChild(typingDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function removeTyping() {
+      const typing = document.getElementById("typing");
+      if (typing) typing.remove();
+    }
+
+    function simulateChatGPTReply(userMsg) {
+      removeTyping();
+
+      const reply = getResponse(userMsg.toLowerCase());
+      const botName = "🤖 CodTech Bot";
+      const type = "received";
+
+      let index = 0;
+      let displayText = "";
+
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add("message", type);
+      msgDiv.innerHTML = `<strong>${botName}:</strong> `;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const interval = setInterval(() => {
+        if (index < reply.length) {
+          displayText += reply.charAt(index);
+          msgDiv.innerHTML = `<strong>${botName}:</strong> ${displayText}`;
+          index++;
+          chatBox.scrollTop = chatBox.scrollHeight;
+        } else {
+          clearInterval(interval);
+        }
+      }, 25);
+    }
+
+    function getResponse(input) {
+  if (input.includes("hello") || input.includes("hi")) {
+    return "Hello! 👋 Welcome to CodTech Chat. How can I assist you today?";
+  } else if (input.includes("how are you")) {
+    return "I'm just code, but I'm happy to chat! 😊 How's your day going?";
+  } else if (input.includes("who are you")) {
+    return "I'm CodTech Bot 🤖, here to guide you through your internship tasks!";
+  } else if (input.includes("project") || input.includes("task")) {
+    return "You're assigned to build a real-time chat interface using frontend tools like HTML, CSS, and JS. Make it smooth and responsive!";
+  } else if (input.includes("internship")) {
+    return "Your internship is a great chance to build hands-on skills. Keep learning and experimenting! 💪";
+  } else if (input.includes("mentor")) {
+    return "You can reach out to your CodTech mentor via your portal or official communication channel.";
+  } else if (input.includes("motivate") || input.includes("inspire")) {
+    return "🚀 Keep pushing forward! Every line of code you write brings you closer to mastery.";
+  } else if (input.includes("thank")) {
+    return "You're welcome! 😊 Always here if you need help.";
+  } else if (input.includes("bye")) {
+    return "Goodbye! 👋 Keep building and never stop learning!";
+  } else if (input.includes("joke")) {
+    return "Why do programmers prefer dark mode? Because light attracts bugs! 😂";
+  } else if (input.includes("help")) {
+    return "Sure! Ask me about your project, internship, or frontend issues and I’ll do my best to guide you.";
+  } else if (input.includes("frontend") || input.includes("html") || input.includes("css") || input.includes("javascript")) {
+    return "Frontend magic! 💻 Let me know what you're stuck on or need help with in HTML, CSS, or JS.";
+  } else if (input.includes("cool") || input.includes("awesome")) {
+    return "Thanks! 😎 You’re doing great too!";
+  } else if (input.includes("name")) {
+    return "I'm CodTech Bot – your friendly assistant during this internship.";
+  } else {
+    return "Hmm... I didn’t get that. Try asking about your tasks, internship, or frontend help!";
+  }
+}
+
+  </script>
+</body>
+</html>
