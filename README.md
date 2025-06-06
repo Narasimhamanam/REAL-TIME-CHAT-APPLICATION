@@ -36,11 +36,7 @@ The chat interface includes fixed header and footer, smart bot replies, typing a
 
 ## Screenshots
 
-*(Replace these with your actual image URLs from your GitHub repository)*
-
-![Screenshot 1](https://github.com/user-attachments/assets/example1.png)  
-![Screenshot 2](https://github.com/user-attachments/assets/example2.png)  
-![Screenshot 3](https://github.com/user-attachments/assets/example3.png)
+![Image](https://github.com/user-attachments/assets/2104c4d2-6ce9-43ec-b5be-877bdb772158)
 
 ---
 
