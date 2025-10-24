@@ -1,13 +1,5 @@
 # Real-Time Chat Application
 
-**Company:** CODTECH IT SOLUTIONS  
-**Developer:** Narasimha Manam  
-**Intern ID:** CT04DF662  
-**Domain:** Front End Development  
-**Mentor:** Neela Santosh  
-
----
-
 ## Overview
 
 This Real-Time Chat Application is a responsive, interactive frontend web application inspired by the ChatGPT interface. Built entirely with HTML, CSS, and JavaScript, it features a minimal design, dark/light theme toggle, and smooth message interactions — simulating a modern AI-based messaging experience.
